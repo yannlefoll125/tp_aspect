@@ -31,6 +31,16 @@ U puts@@GLIBC_2.2.5
 
 C'est donc `int puts(const char *s)` qui est appelée pour mon `printf`
 
+L'idée est de définir une implémentation "personnelle" de `puts`, et indiquer à l'exécution de `hello` d'utiliser cette implémentation de `puts`, et non celle de la libc.
+
+Cette fonction est implémentée dans `hack.c`, et est compilée en librairie dynamique avec la commande `gcc -share -fPIC -o hack.so hack.c`.
+
+Pour indiquer à `hello` qu'il doit aller chercher `puts` en priorité dans la librairie `hack.so`, on modifie la variable d'environnement LD_PRELOAD lors de l'exécution : 
+```
+LD_PRELOAD=./hack.so ./hello
+```
+
+TODO: remarques
 
 
 
