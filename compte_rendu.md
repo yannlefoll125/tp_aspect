@@ -1,13 +1,15 @@
 # Partie 1
 
-## 1.1
+## 1.1 PATH
 
 Initialement, `wc` appelle `/usr/bin/wc` (comme indiqué par le résultat de `which wc`)
 
 Mon script bash *wc* affiche "hi", puis appelle *wc* en lui passant l'ensemble des arguments.
 
 Pour appeler mon script lorsque j'appelle wc dans un terminal, je l'ajoute au path
-```export PATH="$(pwd):"$PATH```
+```
+export PATH="$(pwd):"$PATH
+```
 
 * Remarque : au départ, j'ai ajouté mon *wc* à la fin du PATH, et donc le *wc* d'orignine était d'abord appelé. L'ordre des emplacements a donc une importance dans la variable PATH 
 
@@ -15,9 +17,9 @@ Pour appeler mon script lorsque j'appelle wc dans un terminal, je l'ajoute au pa
 
 * Remarque : dans une première version du script, j'appelais *wc* sans donner le chemin complet du *wc* d'origine. Mon script s'appelais donc récursivement. Il faut appeler le *wc* d'originie avec `/usr/bin/wc/`
 
-## 1.2
+## 1.2 LD_PRELOAD
 
-Mon executable `hello` appelle simplement `printf("Hellow World!\")`
+Mon executable `hello` appelle simplement `printf("Hellow World!\n")`
 
 `hello` est compilé avec `gcc -o hello hello.c`
 
@@ -40,7 +42,9 @@ Pour indiquer à `hello` qu'il doit aller chercher `puts` en priorité dans la l
 LD_PRELOAD=./hack.so ./hello
 ```
 
-TODO: remarques
+* Remarque : Dans un premier temps, j'ai implémenté mon `puts` en utilisant `printf`. Mais comme `printf` est remplacée par `puts`, j'appelais récursivement ma propre implémentation de `puts` (même erreur que pour le 1.1). J'ai donc implémenté mon `puts` avec l'appel système `write`
+
+## 1.3 Décorateurs Python
 
 
 
