@@ -151,6 +151,121 @@ On a bien la trace de la stack d'appels jusqu'à l'appel de `test`
 
 ### 1.3.2
 
+Ressource supplémentaire utilisée pour comprendre l'implémentation de décorateur via une classe
+
+3. http://www.artima.com/weblogs/viewpost.jsp?thread=240808 et https://www.artima.com/weblogs/viewpost.jsp?thread=240845
+
+L'objectif est de définir un décorateur, cette fois en utilisant une classe. Le comportement
+désiré est le suivant : si la fonction 'bar' est présente dans la pile d'appel, on
+affiche la trace de la pile, sinon on exécute simplement la fonction.
+
+Fichier source pour cette question : `deco_class.py`
+
+Le décorateur est définit via la classe `deco`:
+
+```python
+class deco(object):
+    def __init__(self, name):
+
+        #Name of the function we want in the call stack to print the stack trace
+        self.name = name
+
+    '''
+    __call__ will be executed anytime the object 'deco' is called.
+    fn will hold the reference to the function decorated. Each time this 
+    function will be executed in the code, __call__ will be executed
+    '''
+    def __call__(self, fn):
+
+        '''
+        Defines the behaviour of the decorator. When the function referenced 
+        by fn is executed, wrapper will be executed with the given parameters
+        '*args' is used to be able to decorate functions with underdetermined 
+        number of arguments.
+        '''
+        def wrapper(*args):
+
+            #extract_stack() returns the call stack as a list of 4-tuples, 
+            #in which the function name is given at index 2)
+            stack_list = traceback.extract_stack()
+
+            #We first check the call stack for a function named 'self.name'. 
+            #If found, print the stack trace
+            if self.isInStack(stack_list, self.name):
+                traceback.print_stack()
+
+            #The function is called anyway
+            fn(*args)
+        return wrapper
+
+    '''
+    isInStack goes through the stack_list given in argument, and checks if the 
+    function name given in argument is in it
+    '''
+    def isInStack(self, stack_list, fun_name):
+        ret = False
+        for s in stack_list:
+            if s[2] == fun_name:
+                ret = True
+                break
+        return ret
+```
+
+Les paramètres du décorateurs sont définis commes attributs d'instance. Ici, il
+n'y a qu'un seul paramètre : `name`, c'est le nom de la fonction à chercher dans
+la pile d'appel.
+
+La fonction décorée sera la fonction `test`
+
+```python
+#This line decorates the function test, with "bar" as argument. It creates an instance of deco with attribute self.name = bar
+#Each time test is called, the function __call__ of this instance will be executed.
+@deco("bar")
+def test():
+    return "test function"
+
+```
+
+Le nom de la fonction à chercher dans la pile d'appel est passé en paramètre de
+l'annotation définissant la décoration de la fonction.
+
+Pour tester le comportement, la fonction `test` est appelée via deux chemins différents :
+via les fonctions `fooX` successives, ce qui ne doit pas déclencher l'affichage de la 
+trace, et via la fonction `bar`, ce qui doit bien évidemment déclencher cet affichage.
+
+```python
+'''
+Functions used to call the decorated function 'test' through 
+different call paths.
+'''
+def foo3():
+    return test()
+
+def foo2():
+    return foo3()
+
+def foo1(bar):
+    return foo2()
+
+def bar():
+    return test()
+```
+
+Code de la fonction main : 
+
+```python
+if __name__ == '__main__':
+    print "Calling foo1(). Should not print the stack"
+    foo1(45)
+
+    print "Calling bar(). Should print the stack"
+    bar()
+```
+
+Résultat :
+
+
+
 
 
 
