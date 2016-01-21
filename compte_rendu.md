@@ -48,21 +48,102 @@ LD_PRELOAD=./hack.so ./hello
 
 ### 1.3.1 Décorateur pour afficher la trace d'appel
 
+Ressources utilisées : 
+
+1. http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/ pour mieux comprendre la notion de décorateur python
+2. https://docs.python.org/2/library/traceback.html et http://stackoverflow.com/questions/3702675/how-to-print-the-full-traceback-without-halting-the-program pour l'utilisation du module `traceback`
+
 L'objectif est d'écrire un décorateur permettant d'afficher la pile d'appel de la fonction décorée, c'est à dire la suite d'appels successifs menant à l'appel de la fonction décorée.   
 
-Voici le code du décorateur. 
-Ressources utilisées : 
-* 1. http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/ pour mieux comprendre la notion de décorateur python
-* 2. https://docs.python.org/2/library/traceback.html et http://stackoverflow.com/questions/3702675/how-to-print-the-full-traceback-without-halting-the-program pour l'utilisation du module `traceback`
+Voici le code du décorateur (deco.py) :  
 
 ```
-import traceback
+import traceback, sys
 
 def traceback_deco(fn):
     def wrapper(arg):
         ret = fn(arg)
-        traceback.print_stack()
+        traceback.print_stack(file=sys.stdout) #Print on stdout, instead of stderr
         return ret
     return wrapper
 ```
+
+`traceback_deco(fn)` prend en argument la référence d'une fonction, et retourne la référence de fonction interne `wrapper(arg)`. 
+
+Ainsi, si on exécute la ligne suivante :
+```
+decorated = traceback_deco(a_function)
+```
+
+`decorated` fera référence à la fonction `wrapper`, dont la variable locale `fn` fera référence à la fonction `a_function`. (En effet, en python, une fonction interne mémorise l'état de la fonction englobante au moment de la définition de cette fonction interne [cf. ref 1, ch. 8]) 
+
+Un appel à la fonction `decorated` appellera donc la fonction `wrapper` où `fn == a_function`, avec l'argument passé à `decorated`.
+
+La ligne :
+```
+decorated(2)
+```
+
+exécutera donc `a_function` avec `2` comme argument, et affichera la trace de la pile d'appel jusqu'à la fonction décorée `decorated`.
+
+Dans le fichier `deco.py`, j'ai illustrée le fonctionnement avec les instructions suivantes :
+
+```
+def foo3(bar):
+    return test(bar)
+
+def foo2(bar):
+    return foo3(bar)
+
+def foo1(bar):
+    return foo2(bar)
+
+@traceback_deco
+def test(a):
+    return "test function, arg value: " + str(a)
+
+if __name__ == '__main__':
+    print "Calling foo1(45)"
+    foo1(45)
+```
+
+Syntaxe : le bout de code 
+```
+@traceback_deco
+def test(a):
+    return "test function, arg value: " + str(a)
+```
+
+est équivalent à
+
+```
+def test(a):
+    return "test function, arg value: " + str(a)
+
+test = traceback_deco(test)
+```
+
+c'est à dire une redéfinition de `test` décorée par `traceback_deco`, en gardant le même identifiant.
+
+L'exécution de `deco.py` donne la sortie suivante :
+```
+Calling foo1(45)
+  File "deco.py", line 25, in <module>
+    foo1(45)
+  File "deco.py", line 17, in foo1
+    return foo2(bar)
+  File "deco.py", line 14, in foo2
+    return foo3(bar)
+  File "deco.py", line 11, in foo3
+    return test(bar)
+  File "deco.py", line 6, in wrapper
+    traceback.print_stack(file=sys.stdout)
+```
+
+On a bien la trace de la stack d'appels jusqu'à l'appel de `test`
+
+### 1.3.2
+
+
+
 

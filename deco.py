@@ -1,9 +1,9 @@
-import traceback
+import traceback, sys
 
 def traceback_deco(fn):
     def wrapper(arg):
         ret = fn(arg)
-        traceback.print_stack()
+        traceback.print_stack(file=sys.stdout) #Print on stdout, instead of stderr
         return ret
     return wrapper
 
@@ -23,7 +23,4 @@ def test(a):
 if __name__ == '__main__':
     print "Calling foo1(45)"
     foo1(45)
-
-    print "Calling foo2(46)"
-    foo2(46)
 
