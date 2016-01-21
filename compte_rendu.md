@@ -7,7 +7,8 @@ Initialement, `wc` appelle `/usr/bin/wc` (comme indiqué par le résultat de `wh
 Mon script bash *wc* affiche "hi", puis appelle *wc* en lui passant l'ensemble des arguments.
 
 Pour appeler mon script lorsque j'appelle wc dans un terminal, je l'ajoute au path
-```
+
+```bash
 export PATH="$(pwd):"$PATH
 ```
 
@@ -24,6 +25,7 @@ Mon executable `hello` appelle simplement `printf("Hellow World!\n")`
 `hello` est compilé avec `gcc -o hello hello.c`
 
 Pour savoir quelle fonction de la librairie standard est appelée pour mon `printf`, j'exécute `nm hello` qui conne comme résultat:
+
 ```
 [...]
 T main
@@ -38,7 +40,8 @@ L'idée est de définir une implémentation "personnelle" de `puts`, et indiquer
 Cette fonction est implémentée dans `hack.c`, et est compilée en librairie dynamique avec la commande `gcc -share -fPIC -o hack.so hack.c`.
 
 Pour indiquer à `hello` qu'il doit aller chercher `puts` en priorité dans la librairie `hack.so`, on modifie la variable d'environnement LD_PRELOAD lors de l'exécution : 
-```
+
+```bash
 LD_PRELOAD=./hack.so ./hello
 ```
 
@@ -57,7 +60,7 @@ L'objectif est d'écrire un décorateur permettant d'afficher la pile d'appel de
 
 Voici le code du décorateur (deco.py) :  
 
-```
+```python
 import traceback, sys
 
 def traceback_deco(fn):
@@ -71,7 +74,8 @@ def traceback_deco(fn):
 `traceback_deco(fn)` prend en argument la référence d'une fonction, et retourne la référence de fonction interne `wrapper(arg)`. 
 
 Ainsi, si on exécute la ligne suivante :
-```
+
+```python
 decorated = traceback_deco(a_function)
 ```
 
@@ -80,7 +84,8 @@ decorated = traceback_deco(a_function)
 Un appel à la fonction `decorated` appellera donc la fonction `wrapper` où `fn == a_function`, avec l'argument passé à `decorated`.
 
 La ligne :
-```
+
+```python
 decorated(2)
 ```
 
@@ -88,7 +93,7 @@ exécutera donc `a_function` avec `2` comme argument, et affichera la trace de l
 
 Dans le fichier `deco.py`, j'ai illustrée le fonctionnement avec les instructions suivantes :
 
-```
+```python
 def foo3(bar):
     return test(bar)
 
@@ -108,7 +113,8 @@ if __name__ == '__main__':
 ```
 
 Syntaxe : le bout de code 
-```
+
+```python
 @traceback_deco
 def test(a):
     return "test function, arg value: " + str(a)
@@ -116,7 +122,7 @@ def test(a):
 
 est équivalent à
 
-```
+```python
 def test(a):
     return "test function, arg value: " + str(a)
 
@@ -126,6 +132,7 @@ test = traceback_deco(test)
 c'est à dire une redéfinition de `test` décorée par `traceback_deco`, en gardant le même identifiant.
 
 L'exécution de `deco.py` donne la sortie suivante :
+
 ```
 Calling foo1(45)
   File "deco.py", line 25, in <module>
