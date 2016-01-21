@@ -46,5 +46,23 @@ LD_PRELOAD=./hack.so ./hello
 
 ## 1.3 Décorateurs Python
 
+### 1.3.1 Décorateur pour afficher la trace d'appel
 
+L'objectif est d'écrire un décorateur permettant d'afficher la pile d'appel de la fonction décorée, c'est à dire la suite d'appels successifs menant à l'appel de la fonction décorée.   
+
+Voici le code du décorateur. 
+Ressources utilisées : 
+* 1. http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/ pour mieux comprendre la notion de décorateur python
+* 2. https://docs.python.org/2/library/traceback.html et http://stackoverflow.com/questions/3702675/how-to-print-the-full-traceback-without-halting-the-program pour l'utilisation du module `traceback`
+
+```
+import traceback
+
+def traceback_deco(fn):
+    def wrapper(arg):
+        ret = fn(arg)
+        traceback.print_stack()
+        return ret
+    return wrapper
+```
 
