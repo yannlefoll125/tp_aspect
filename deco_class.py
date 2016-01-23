@@ -8,28 +8,35 @@ class deco(object):
 
     '''
     __call__ will be executed anytime the object 'deco' is called.
-    fn will hold the reference to the function decorated. Each time this function will be executed in the code, __call__ will be executed
+    fn will hold the reference to the function decorated. Each time this
+    function will be executed in the code, __call__ will be executed
     '''
     def __call__(self, fn):
 
         '''
-        Defines the behaviour of the decorator. When the function referenced by fn is executed, wrapper will be executed with the given parameters
+        Defines the behaviour of the decorator. When the function referenced
+        by fn is executed, wrapper will be executed with the given parameters
+        '*args' is used to be able to decorate functions with underdetermined
+        number of arguments.
         '''
         def wrapper(*args):
 
-            #extract_stack() returns the call stack as a list of 4-tuples, in which the function name is given at index 2)
+            #extract_stack() returns the call stack as a list of 4-tuples,
+            #in which the function name is given at index 2)
             stack_list = traceback.extract_stack()
 
-            #We first check the call stack for a function named 'self.name'. If found, print the stack trace
+            #We first check the call stack for a function named 'self.name'.
+            #If found, print the stack trace
             if self.isInStack(stack_list, self.name):
-                traceback.print_stack()
+                traceback.print_stack(file=sys.stdout)
 
             #The function is called anyway
             fn(*args)
         return wrapper
 
     '''
-    isInStack goes through the stack_list given in argument, and checks if the function name given in argument is in it
+    isInStack goes through the stack_list given in argument, and checks if the
+    function name given in argument is in it
     '''
     def isInStack(self, stack_list, fun_name):
         ret = False

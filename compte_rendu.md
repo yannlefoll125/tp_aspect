@@ -153,7 +153,7 @@ On a bien la trace de la stack d'appels jusqu'à l'appel de `test`
 
 Ressource supplémentaire utilisée pour comprendre l'implémentation de décorateur via une classe
 
-3. http://www.artima.com/weblogs/viewpost.jsp?thread=240808 et https://www.artima.com/weblogs/viewpost.jsp?thread=240845
+3. [http://www.artima.com/weblogs/viewpost.jsp?thread=240808]() et [https://www.artima.com/weblogs/viewpost.jsp?thread=240845]
 
 L'objectif est de définir un décorateur, cette fois en utilisant une classe. Le comportement
 désiré est le suivant : si la fonction 'bar' est présente dans la pile d'appel, on
@@ -192,7 +192,7 @@ class deco(object):
             #We first check the call stack for a function named 'self.name'. 
             #If found, print the stack trace
             if self.isInStack(stack_list, self.name):
-                traceback.print_stack()
+                traceback.print_stack(file=sys.stdout)
 
             #The function is called anyway
             fn(*args)
@@ -264,8 +264,18 @@ if __name__ == '__main__':
 
 Résultat :
 
+```
+Calling foo1(). Should not print the stack
+Calling bar(). Should print the stack
+  File "deco_class.py", line 77, in <module>
+    bar()
+  File "deco_class.py", line 64, in bar
+    return test()
+  File "deco_class.py", line 31, in wrapper
+    traceback.print_stack(file=sys.stdout)
+```
 
+Ce qui est le résultat attendu.
 
-
-
+TODO: commentaire sur la programmation orientée aspet
 
