@@ -2,7 +2,6 @@
 import inspect
 import re
 
-
 pre_advice_pattern = re.compile("_c.*")
 post_advice_pattern = re.compile("exc.*")
 around_advice_pattern = re.compile("get.*")
@@ -37,16 +36,21 @@ def foo(a, b, c):
     print "b: " + str(b)
     print "c: " + str(c)
 
+'''
+Returns the module named 'name', with decorated functions which name corresponds
+to one of the regex pattern, pre_advice_pattern, post_advice_pattern, or
+around_advice_pattern
+'''
 def my_import(name):
 
-
-    print "import is call with name: " + name
+    #Importing the module
     module =  __import__(name)
+
+    #List the functions and builtin functions as a list of tuple (name, function)
     fun_list = inspect.getmembers(module, inspect.isfunction)
     fun_list += inspect.getmembers(module, inspect.isbuiltin)
 
-
-
+    #Decorate functions if their name correspond to one of the regex pattern
     for (name, fun) in fun_list:
         if around_advice_pattern.match(name) != None:
             setattr(module, name, around_call(fun, pre_advice, post_advice))

@@ -222,7 +222,7 @@ La fonction décorée sera la fonction `test`
 #Each time test is called, the function __call__ of this instance will be executed.
 @deco("bar")
 def test():
-    return "test function"
+return "test function"
 
 ```
 
@@ -239,27 +239,27 @@ Functions used to call the decorated function 'test' through
 different call paths.
 '''
 def foo3():
-    return test()
+return test()
 
 def foo2():
-    return foo3()
+return foo3()
 
 def foo1(bar):
-    return foo2()
+return foo2()
 
 def bar():
-    return test()
+return test()
 ```
 
 Code de la fonction main : 
 
 ```python
 if __name__ == '__main__':
-    print "Calling foo1(). Should not print the stack"
-    foo1(45)
+print "Calling foo1(). Should not print the stack"
+foo1(45)
 
-    print "Calling bar(). Should print the stack"
-    bar()
+print "Calling bar(). Should print the stack"
+bar()
 ```
 
 Résultat :
@@ -267,12 +267,12 @@ Résultat :
 ```
 Calling foo1(). Should not print the stack
 Calling bar(). Should print the stack
-  File "deco_class.py", line 77, in <module>
-    bar()
-  File "deco_class.py", line 64, in bar
-    return test()
-  File "deco_class.py", line 31, in wrapper
-    traceback.print_stack(file=sys.stdout)
+File "deco_class.py", line 77, in <module>
+bar()
+File "deco_class.py", line 64, in bar
+return test()
+File "deco_class.py", line 31, in wrapper
+traceback.print_stack(file=sys.stdout)
 ```
 
 Ce qui est le résultat attendu.
@@ -300,7 +300,7 @@ Si on définit une fonction foo() de la manière suivante :
 
 ```python
 def foo():
-    print "whatever"
+print "whatever"
 ```
 
 La chaine de charactères `'foo'` est ajoutée à la liste retournée par `dir()` :
@@ -315,16 +315,16 @@ Si on ajoute une fonction `fooWithArgs(a)` :
 
 ```python
 def fooWithArgs(a):
-    return a + 2
+return a + 2
 ```
 
 On a exactement les mêmes modifications de `dir()` et `globals()`. On ne peut donc pas récupérer la signature complète d'une fonction uniquement en utilisant `dir()` et `globals()`.
 
 ## 2.2 isinstance et type
 
-Fichier source `type.py`
-
 ### Ressources
+
+Fichier source `type.py`
 
 5. Doc Python sur les types : https://docs.python.org/2/library/types.html?highlight=types#module-types
 
@@ -338,18 +338,18 @@ Pour extraire seulement les fonctions du dictionnaire retourné par `globals()`,
 ```python
 '''
 Returns a dictionary of the global functions,
-    key: function name
-    value: function object
+key: function name
+value: function object
 '''
 def getFunctions():
-    globals_dict = globals()
-    functionDict = dict()
-    for key in globals_dict.keys():
-        value = globals_dict[key]
-        if isinstance(value, types.FunctionType):
-            functionDict[key] = value
+globals_dict = globals()
+functionDict = dict()
+for key in globals_dict.keys():
+    value = globals_dict[key]
+    if isinstance(value, types.FunctionType):
+        functionDict[key] = value
 
-    return functionDict
+return functionDict
 ```
 
 Pour chaque clé du dictionnaire retourné par globals, on regarde si le type est `types.FunctionType` à l'aide de `isinstance(..)`, et si c'est le cas, on ajoute la paire (clé, valeur) au dictionnaire de sortie.
@@ -370,9 +370,9 @@ La fonction `wrap(fn, *args, **kwargs)` prend en premier argument la fonction à
 
 #2.4 Redéfinission de fonction à la volée
 
-Source : `fun.py`
-
 ## Ressources
+
+Source : `fun.py`
 
 6. http://stackoverflow.com/questions/13503079/how-to-create-a-copy-of-a-python-function : Réponse stackoverflow sur la copie de fonction en python
 7. https://docs.python.org/2/library/copy.html : Doc python sur le module copy
@@ -390,9 +390,9 @@ J'ai trouvé la solution suivante sur stackoverflow :
 
 ```python
 def copyFunction(f, f_name):
-    return types.FunctionType(f.func_code, f.func_globals, name = f_name,
-                            argdefs = f.func_defaults,
-                            closure = f.func_closure)
+return types.FunctionType(f.func_code, f.func_globals, name = f_name,
+                        argdefs = f.func_defaults,
+                        closure = f.func_closure)
 [...]
 g = copyFunction(foo, "g")
 ```
@@ -406,6 +406,84 @@ J'ai cherché à comprendre cette solution, mais je n'ai pas trouvé de document
 * `func_defaults` : les valeurs par défaut des arguments
 * `func_closure` : le mécanisme qui permet de garder les symboles extérieurs que la fonction utilise (cf. 1.3.1)
 
+# 3 Premier tisseur d'aspect
+
+## Ressources
+
+Source : `aspect.py`
+
+9. https://docs.python.org/2/library/inspect.html?highlight=inspect#inspect.getmembers : doc Python sur le module `inspect`
+10. https://docs.python.org/2/library/sys.html?highlight=sys#module-sys : doc Python sur le module `sys` (pour tester)
+11. https://docs.python.org/2/library/re.html?highlight=re#module-re : doc Python sur le module `re`
+12. http://stackoverflow.com/questions/4040620/is-it-possible-to-list-all-functions-in-a-module : article SO pour l'utilisation du module `inspect` pour récupérer la liste des fonctions d'un module
+
+## Decorateurs
+
+Les fonctions `before_call` et `after_call` sont des décorateurs qui prennent en paramètre la fonction à décorer, et la fonction de conseil à ajouter respectivement avant et après l'appel à la fonction à décorer.
+
+```python
+def before_call(joint_point, advice):
+def inner(*args, **kwargs):
+    advice()
+    return joint_point(*args, **kwargs)
+return inner
+
+def after_call(joint_point, advice):
+def inner(*args, **kwargs):
+    ret = joint_point(*args, **kwargs)
+    advice()
+    return ret
+return inner
+```
+
+Les paramètres de la fonction à décorés sont pris de manière générique, à l'aide de `*args` et `**kwargs` (cf. 2.3).
+
+La fonction `around_call` décore successivement la fonction donnée en paramètre avec `before_call` et `after_call`
+
+```python
+def around_call(joint_point, before_advice, after_advice):
+pre = before_call(joint_point, before_advice)
+return after_call(pre, after_advice)
+```
+
+Le `main` permet de tester le comportement, qui est celui attendu.
+
+## Coupes
+
+L'objectif est de pouvoir injecter du code dans des fonctions pour lesquelles nous n'avons pas accès au code. Je teste ici sur des fonctions du module `sys`.
+Le principe est le suivant : je définis une fonction `my_import(name)` qui va me permettre d'importer un module, et de faire des opérations sur ses éléments. A l'import du module, je récupère la liste des fonction à l'aide de la fonction `getmembers` du module `inspect`. Pour chaque fonction, je regarde s'il match une des expression régulières, définies comme variable globale, et applique le décorateur correspondant. Je retourne ensuite le module modifié.
+
+```python
+'''
+Returns the module named 'name', with decorated functions which name corresponds
+to one of the regex pattern, pre_advice_pattern, post_advice_pattern, or
+around_advice_pattern
+'''
+def my_import(name):
+
+    #Importing the module
+    module =  __import__(name)
+
+    #List the functions and builtin functions as a list of tuple (name, function)
+    fun_list = inspect.getmembers(module, inspect.isfunction)
+    fun_list += inspect.getmembers(module, inspect.isbuiltin)
+
+    #Decorate functions if their name correspond to one of the regex pattern
+    for (name, fun) in fun_list:
+        if around_advice_pattern.match(name) != None:
+            setattr(module, name, around_call(fun, pre_advice, post_advice))
+        elif pre_advice_pattern.match(name) != None:
+            setattr(module, name, before_call(fun, pre_advice))
+        elif post_advice_pattern.match(name) != None:
+            setattr(module, name, after_call(fun, post_advice))
+    return module
+
+sys = my_import('sys')
+```
+
+Je teste le comportement à la fin du main, en appelant 4 fonctions différentes de `sys`, qui remplissent les trois cas différents, ie. le matching à une des trois première regex, et le matching à aucune des regex.
+
+* Ce qui pourrait être amélioré : si un nom de fonction match plusieurs regex, il faudrait pouvoir appliquer plusieurs décorateur. Dans mon code, j'ai choisi de n'appliquer que le premier decorateur pour lequel la regex match, pour éviter le cas où la fonction serait décorée par `before_call` et `around_call`, et il y aurait alors deux fois l'appel à la fonction `pre_advice` avant l'execution de la méthode de base.
 
 
 
