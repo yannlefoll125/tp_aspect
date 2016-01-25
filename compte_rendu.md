@@ -53,8 +53,8 @@ LD_PRELOAD=./hack.so ./hello
 
 Ressources utilisées : 
 
-(1) http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/ pour mieux comprendre la notion de décorateur python
-(2) https://docs.python.org/2/library/traceback.html et http://stackoverflow.com/questions/3702675/how-to-print-the-full-traceback-without-halting-the-program pour l'utilisation du module `traceback`
+(1). http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/ pour mieux comprendre la notion de décorateur python
+(2). https://docs.python.org/2/library/traceback.html et http://stackoverflow.com/questions/3702675/how-to-print-the-full-traceback-without-halting-the-program pour l'utilisation du module `traceback`
 
 L'objectif est d'écrire un décorateur permettant d'afficher la pile d'appel de la fonction décorée, c'est à dire la suite d'appels successifs menant à l'appel de la fonction décorée.   
 
@@ -153,7 +153,7 @@ On a bien la trace de la stack d'appels jusqu'à l'appel de `test`
 
 Ressource supplémentaire utilisée pour comprendre l'implémentation de décorateur via une classe
 
-(3) [http://www.artima.com/weblogs/viewpost.jsp?thread=240808]() et [https://www.artima.com/weblogs/viewpost.jsp?thread=240845]
+(3). [http://www.artima.com/weblogs/viewpost.jsp?thread=240808]() et [https://www.artima.com/weblogs/viewpost.jsp?thread=240845]
 
 L'objectif est de définir un décorateur, cette fois en utilisant une classe. Le comportement
 désiré est le suivant : si la fonction 'bar' est présente dans la pile d'appel, on
