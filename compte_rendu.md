@@ -53,8 +53,9 @@ LD_PRELOAD=./hack.so ./hello
 
 Ressources utilisées : 
 
-(1). http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/ pour mieux comprendre la notion de décorateur python
-(2). https://docs.python.org/2/library/traceback.html et http://stackoverflow.com/questions/3702675/how-to-print-the-full-traceback-without-halting-the-program pour l'utilisation du module `traceback`
+(1) http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/ pour mieux comprendre la notion de décorateur python
+
+(2) https://docs.python.org/2/library/traceback.html et http://stackoverflow.com/questions/3702675/how-to-print-the-full-traceback-without-halting-the-program pour l'utilisation du module `traceback`
 
 L'objectif est d'écrire un décorateur permettant d'afficher la pile d'appel de la fonction décorée, c'est à dire la suite d'appels successifs menant à l'appel de la fonction décorée.   
 
@@ -153,7 +154,7 @@ On a bien la trace de la stack d'appels jusqu'à l'appel de `test`
 
 Ressource supplémentaire utilisée pour comprendre l'implémentation de décorateur via une classe
 
-(3). [http://www.artima.com/weblogs/viewpost.jsp?thread=240808]() et [https://www.artima.com/weblogs/viewpost.jsp?thread=240845]
+(3) [http://www.artima.com/weblogs/viewpost.jsp?thread=240808]() et [https://www.artima.com/weblogs/viewpost.jsp?thread=240845]
 
 L'objectif est de définir un décorateur, cette fois en utilisant une classe. Le comportement
 désiré est le suivant : si la fonction 'bar' est présente dans la pile d'appel, on
@@ -283,7 +284,7 @@ Ce qui est le résultat attendu.
 
 ### Ressources
 
-4. Doc Python sur les fonctions natives (dont font partie `dir()` et `globals()`) https://docs.python.org/2/library/functions.html
+(4) Doc Python sur les fonctions natives (dont font partie `dir()` et `globals()`) https://docs.python.org/2/library/functions.html
 
 ### Notes
 
@@ -326,7 +327,7 @@ On a exactement les mêmes modifications de `dir()` et `globals()`. On ne peut 
 
 Fichier source `type.py`
 
-5. Doc Python sur les types : https://docs.python.org/2/library/types.html?highlight=types#module-types
+(5) Doc Python sur les types : https://docs.python.org/2/library/types.html?highlight=types#module-types
 
 
 ### Notes
@@ -374,9 +375,11 @@ La fonction `wrap(fn, *args, **kwargs)` prend en premier argument la fonction à
 
 Source : `fun.py`
 
-6. http://stackoverflow.com/questions/13503079/how-to-create-a-copy-of-a-python-function : Réponse stackoverflow sur la copie de fonction en python
-7. https://docs.python.org/2/library/copy.html : Doc python sur le module copy
-8. http://www.linuxtopia.org/online_books/programming_books/python_programming/python_ch10s04.html
+(6) http://stackoverflow.com/questions/13503079/how-to-create-a-copy-of-a-python-function : Réponse stackoverflow sur la copie de fonction en python
+
+(7) https://docs.python.org/2/library/copy.html : Doc python sur le module copy
+
+(8) http://www.linuxtopia.org/online_books/programming_books/python_programming/python_ch10s04.html
 
 ## Notes
 
@@ -412,10 +415,13 @@ J'ai cherché à comprendre cette solution, mais je n'ai pas trouvé de document
 
 Source : `aspect.py`
 
-9. https://docs.python.org/2/library/inspect.html?highlight=inspect#inspect.getmembers : doc Python sur le module `inspect`
-10. https://docs.python.org/2/library/sys.html?highlight=sys#module-sys : doc Python sur le module `sys` (pour tester)
-11. https://docs.python.org/2/library/re.html?highlight=re#module-re : doc Python sur le module `re`
-12. http://stackoverflow.com/questions/4040620/is-it-possible-to-list-all-functions-in-a-module : article SO pour l'utilisation du module `inspect` pour récupérer la liste des fonctions d'un module
+(9) https://docs.python.org/2/library/inspect.html?highlight=inspect#inspect.getmembers : doc Python sur le module `inspect`
+
+(10) https://docs.python.org/2/library/sys.html?highlight=sys#module-sys : doc Python sur le module `sys` (pour tester)
+
+(11) https://docs.python.org/2/library/re.html?highlight=re#module-re : doc Python sur le module `re`
+
+(12) http://stackoverflow.com/questions/4040620/is-it-possible-to-list-all-functions-in-a-module : article SO pour l'utilisation du module `inspect` pour récupérer la liste des fonctions d'un module
 
 ## Decorateurs
 
