@@ -335,4 +335,34 @@ Fichier source `type.py`
 
 * Remarque : itération sur un dictionnaire. Ne pas utiliser dictname.itername() quand le dictionnaire est modifié pendant la boucle. Il est préférable d'utiliser la méthode `keys()` pour obtenir la liste des clés, et itérer dessus.
 
+Pour extraire seulement les fonctions du dictionnaire retourné par `globals()`, j'ai écrit la fonction suivante :
+
+```python
+'''
+Returns a dictionary of the global functions,
+    key: function name
+    value: function object
+'''
+def getFunctions():
+    globals_dict = globals()
+    functionDict = dict()
+    for key in globals_dict.keys():
+        value = globals_dict[key]
+        if isinstance(value, types.FunctionType):
+            functionDict[key] = value
+
+    return functionDict
+```
+
+Pour chaque clé du dictionnaire retourné par globals, on regarde si le type est `types.FunctionType` à l'aide de `isinstance(..)`, et si c'est le cas, on ajoute la paire (clé, valeur) au dictionnaire de sortie.
+
+J'ai ai profité pour tester quelques comportements :
+
+* Fonction interne : les fonctions internes ne sont pas des symboles globaux, et donc n'apparaissent pas dans le dictionnaire. (cf. `fooWithInner()`)
+* Ordre des fonctions : seules les fonctiones définies avant **l'apel** de la fonction `getFunctions()` apparaissent dans le dictionnaire. La fonction `fooAfterGetFunction()` est présente, bien que définie après la définition de `getFunctions()`, mais la fonction `fooAfterMain()`, définie après l'appel de `getFunctions()`, n'apparait pas. Cela s'explique par le fait que la fonction `globals()` donne l'état actuel de la table des symboles, et au moment de l'appel de `getFunctions()`, `fooAfterMain()` n'est pas encore définie.
+
+#2.3 Passage de parametres
+
+Source : `params.py`
+
 
