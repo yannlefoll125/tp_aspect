@@ -277,5 +277,62 @@ Calling bar(). Should print the stack
 
 Ce qui est le résultat attendu.
 
-TODO: commentaire sur la programmation orientée aspet
+TODO: commentaire sur la programmation orientée aspect
+
+# 2 Introspection en Python
+
+## 2.1
+
+### Ressources
+
+4. Doc Python sur les fonctions natives (dont font partie `dir()` et `globals()`) https://docs.python.org/2/library/functions.html
+
+### Notes
+
+Avant toute définition de fonction : 
+
+* la fonction `dir()` retourne `['__builtins__', '__doc__', '__name__', '__package__']`
+* la fonction `globals()` retourne `{'__builtins__': <module '__builtin__' (built-in)>, '__name__': '__main__', '__doc__': None, '__package__': None}`
+
+La fonction `dir()` retourne la liste des *symboles* de l'objet passé en argument. Si aucun objet n'est passé en argument, elle retourne la liste des symboles du module courant.
+
+La fonction `globals()` retourne un dictionnaire, représentant la table des symboles globaux du module dans lequel elle est appelée. La clé du dictionnaire est le nom du symbole, la valeur est la référence de l'objet que nomme le symbole.
+
+Si on définit une fonction foo() de la manière suivante : 
+
+```python
+def foo():
+    print "whatever"
+```
+
+La chaine de charactères `'foo'` est ajoutée à la liste retournée par `dir()` :
+
+```python
+['__builtins__', '__doc__', '__name__', '__package__', 'foo']
+```
+
+et l'entrée `'foo': <function foo at 0x7ff8837fd5f0>` est ajoutée au dictionnaire retourné par globals().
+
+Si on ajoute une fonction `fooWithArgs(a)` :
+
+```python
+def fooWithArgs(a):
+    return a + 2
+```
+
+On a exactement les mêmes modifications de `dir()` et `globals()`. On ne peut donc pas récupérer la signature complète d'une fonction uniquement en utilisant `dir()` et `globals()`.
+
+## 2.2 isinstance et type
+
+Fichier source `type.py`
+
+### Ressources
+
+5. Doc Python sur les types : https://docs.python.org/2/library/types.html?highlight=types#module-types
+
+
+### Notes
+
+* Remarque : itération sur un dictionnaire. Ne pas utiliser dictname.itername() quand le dictionnaire est modifié pendant la boucle. Il est préférable d'utiliser la méthode `keys()` pour obtenir la liste des clés, et itérer dessus.
+
 
