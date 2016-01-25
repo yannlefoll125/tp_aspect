@@ -368,6 +368,44 @@ La fonction `wrap(fn, *args, **kwargs)` prend en premier argument la fonction à
 `*args` représente la liste des arguments non nommés. Attention, ce sont des arguments positionnels, ils doivent être passés dans l'ordre.
 `**kwargs` représente la liste des arguments nommés, sous forme de dictionnaire. Les argument peuvent être passés dans le désordre, mais ces arguments doivent être placés après *tous* les arguments non nommés.
 
+#2.4 Redéfinission de fonction à la volée
+
+Source : `fun.py`
+
+## Ressources
+
+6. http://stackoverflow.com/questions/13503079/how-to-create-a-copy-of-a-python-function : Réponse stackoverflow sur la copie de fonction en python
+7. https://docs.python.org/2/library/copy.html : Doc python sur le module copy
+8. http://www.linuxtopia.org/online_books/programming_books/python_programming/python_ch10s04.html
+
+## Notes
+
+J'ai repris la fonction `foo(a, b, c)` du 2.3, et j'ai essayé de la copier, en vérifiant que la fonction copiée était différence de la fonction d'origine, avec un test d'assertion sur `g is not foo`.
+
+Premier essai : 
+
+J'ai voulu utiliser copier `foo` dans `h` avec `copy.deepcopy(foo)` (cf. ressource 7.), mais l'assertion `assert h is not foo` soulève une exception, et la représentation sous forme de chaine de caractère (donnée par `print str(foo)`) donnent la même référence.
+
+J'ai trouvé la solution suivante sur stackoverflow :
+
+```python
+def copyFunction(f, f_name):
+    return types.FunctionType(f.func_code, f.func_globals, name = f_name,
+                            argdefs = f.func_defaults,
+                            closure = f.func_closure)
+[...]
+g = copyFunction(foo, "g")
+```
+
+qui donne le résultat attendu: l'assertion `assert g is not foo` ne lève pas d'AssertionException, et les repésentations en chaine de charactères de `foo` et `g` sont différentes. 
+
+J'ai cherché à comprendre cette solution, mais je n'ai pas trouvé de documentation pour le constructeur `types.FunctionType(..)`. La documentation du module `types` (cf. ref. 5.) définit simplement `types.FunctionType`, pas de fonction ayant le même nom. La référence 8. donne cependant quelques indices sur ce qui est effectué, en donnant des informations sur les attributs copiés : 
+
+* `func_code` : le code de la fonction à copier
+* `func_globals` : la table des symboles globaux de la fonction à copier, c'est à dire le dictionnaire retourné par `globals()` dans le module de définition de cette fonction
+* `func_defaults` : les valeurs par défaut des arguments
+* `func_closure` : le mécanisme qui permet de garder les symboles extérieurs que la fonction utilise (cf. 1.3.1)
+
 
 
 
