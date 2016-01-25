@@ -277,8 +277,6 @@ Calling bar(). Should print the stack
 
 Ce qui est le résultat attendu.
 
-TODO: commentaire sur la programmation orientée aspect
-
 # 2 Introspection en Python
 
 ## 2.1
@@ -364,5 +362,13 @@ J'ai ai profité pour tester quelques comportements :
 #2.3 Passage de parametres
 
 Source : `params.py`
+
+La fonction `wrap(fn, *args, **kwargs)` prend en premier argument la fonction à traiter, suivi des arguments nom només dans l'ordre, et enfin des arguments nommés. Elle affiche la valeur des arguments passés, et appelle la fonction passée en premier argument. Cette implémentation est déjà générale à mon sens, puisqu'elle passe les arguments à la fonction passée en argument, quelle qu'elle soit.
+
+`*args` représente la liste des arguments non nommés. Attention, ce sont des arguments positionnels, ils doivent être passés dans l'ordre.
+`**kwargs` représente la liste des arguments nommés, sous forme de dictionnaire. Les argument peuvent être passés dans le désordre, mais ces arguments doivent être placés après *tous* les arguments non nommés.
+
+
+
 
 
