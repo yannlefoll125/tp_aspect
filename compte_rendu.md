@@ -1,6 +1,10 @@
-# Partie 1
+#Compte rendu TP aspect
 
-## 1.1 PATH
+Yann LE FOLL
+
+## Partie 1
+
+### 1.1 PATH
 
 Initialement, `wc` appelle `/usr/bin/wc` (comme indiqué par le résultat de `which wc`)
 
@@ -18,7 +22,7 @@ export PATH="$(pwd):"$PATH
 
 * Remarque : dans une première version du script, j'appelais *wc* sans donner le chemin complet du *wc* d'origine. Mon script s'appelais donc récursivement. Il faut appeler le *wc* d'originie avec `/usr/bin/wc/`
 
-## 1.2 LD_PRELOAD
+### 1.2 LD_PRELOAD
 
 Mon executable `hello` appelle simplement `printf("Hellow World!\n")`
 
@@ -47,9 +51,9 @@ LD_PRELOAD=./hack.so ./hello
 
 * Remarque : Dans un premier temps, j'ai implémenté mon `puts` en utilisant `printf`. Mais comme `printf` est remplacée par `puts`, j'appelais récursivement ma propre implémentation de `puts` (même erreur que pour le 1.1). J'ai donc implémenté mon `puts` avec l'appel système `write`
 
-## 1.3 Décorateurs Python
+### 1.3 Décorateurs Python
 
-### 1.3.1 Décorateur pour afficher la trace d'appel
+#### 1.3.1 Décorateur pour afficher la trace d'appel
 
 Ressources utilisées : 
 
@@ -150,7 +154,7 @@ Calling foo1(45)
 
 On a bien la trace de la stack d'appels jusqu'à l'appel de `test`
 
-### 1.3.2
+#### 1.3.2
 
 Ressource supplémentaire utilisée pour comprendre l'implémentation de décorateur via une classe
 
@@ -278,15 +282,15 @@ traceback.print_stack(file=sys.stdout)
 
 Ce qui est le résultat attendu.
 
-# 2 Introspection en Python
+## 2 Introspection en Python
 
-## 2.1
+### 2.1
 
-### Ressources
+#### Ressources
 
 (4) Doc Python sur les fonctions natives (dont font partie `dir()` et `globals()`) https://docs.python.org/2/library/functions.html
 
-### Notes
+#### Notes
 
 Avant toute définition de fonction : 
 
@@ -321,16 +325,16 @@ return a + 2
 
 On a exactement les mêmes modifications de `dir()` et `globals()`. On ne peut donc pas récupérer la signature complète d'une fonction uniquement en utilisant `dir()` et `globals()`.
 
-## 2.2 isinstance et type
+### 2.2 isinstance et type
 
-### Ressources
+#### Ressources
 
 Fichier source `type.py`
 
 (5) Doc Python sur les types : https://docs.python.org/2/library/types.html?highlight=types#module-types
 
 
-### Notes
+#### Notes
 
 * Remarque : itération sur un dictionnaire. Ne pas utiliser dictname.itername() quand le dictionnaire est modifié pendant la boucle. Il est préférable d'utiliser la méthode `keys()` pour obtenir la liste des clés, et itérer dessus.
 
@@ -371,7 +375,7 @@ La fonction `wrap(fn, *args, **kwargs)` prend en premier argument la fonction à
 
 #2.4 Redéfinission de fonction à la volée
 
-## Ressources
+### Ressources
 
 Source : `fun.py`
 
@@ -381,7 +385,7 @@ Source : `fun.py`
 
 (8) http://www.linuxtopia.org/online_books/programming_books/python_programming/python_ch10s04.html
 
-## Notes
+### Notes
 
 J'ai repris la fonction `foo(a, b, c)` du 2.3, et j'ai essayé de la copier, en vérifiant que la fonction copiée était différence de la fonction d'origine, avec un test d'assertion sur `g is not foo`.
 
@@ -409,9 +413,9 @@ J'ai cherché à comprendre cette solution, mais je n'ai pas trouvé de document
 * `func_defaults` : les valeurs par défaut des arguments
 * `func_closure` : le mécanisme qui permet de garder les symboles extérieurs que la fonction utilise (cf. 1.3.1)
 
-# 3 Premier tisseur d'aspect
+## 3 Premier tisseur d'aspect
 
-## Ressources
+### Ressources
 
 Source : `aspect.py`
 
@@ -423,7 +427,7 @@ Source : `aspect.py`
 
 (12) http://stackoverflow.com/questions/4040620/is-it-possible-to-list-all-functions-in-a-module : article SO pour l'utilisation du module `inspect` pour récupérer la liste des fonctions d'un module
 
-## Decorateurs
+### Decorateurs
 
 Les fonctions `before_call` et `after_call` sont des décorateurs qui prennent en paramètre la fonction à décorer, et la fonction de conseil à ajouter respectivement avant et après l'appel à la fonction à décorer.
 
@@ -454,7 +458,7 @@ return after_call(pre, after_advice)
 
 Le `main` permet de tester le comportement, qui est celui attendu.
 
-## Coupes
+### Coupes
 
 L'objectif est de pouvoir injecter du code dans des fonctions pour lesquelles nous n'avons pas accès au code. Je teste ici sur des fonctions du module `sys`.
 Le principe est le suivant : je définis une fonction `my_import(name)` qui va me permettre d'importer un module, et de faire des opérations sur ses éléments. A l'import du module, je récupère la liste des fonction à l'aide de la fonction `getmembers` du module `inspect`. Pour chaque fonction, je regarde s'il match une des expression régulières, définies comme variable globale, et applique le décorateur correspondant. Je retourne ensuite le module modifié.
